@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>献立お手伝いちゃん</title>
+    <style>
+        /* テーマカラーの初期値（和食：緑） */
+        :root { --main-color: #81c784; }
+        
+        body { font-family: sans-serif; background-color: #f4f7f6; text-align: center; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        /* 3つのモード選択ボタン */
+        .mode-selector { margin-bottom: 20px; display: flex; justify-content: center; gap: 8px; }
+        .mode-btn { border: 2px solid #ddd; padding: 8px 16px; cursor: pointer; border-radius: 20px; background: white; font-weight: bold; transition: 0.3s; flex: 1; }
+        .mode-btn.active { background: var(--main-color); color: white; border-color: var(--main-color); }
+
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .menu-item { padding: 15px; background: #fafafa; border-radius: 10px; border-left: 5px solid var(--main-color); transition: 0.3s; }
+        .label { font-size: 0.75rem; color: #666; display: block; margin-bottom: 5px; }
+        .dish-name { font-weight: bold; font-size: 1.1rem; color: #333; }
+
+        .generate-btn { background: #333; color: white; border: none; padding: 15px 40px; font-size: 1.1rem; border-radius: 50px; cursor: pointer; width: 100%; font-weight: bold; }
+        .generate-btn:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🍳 今日のメニューを考えます！</h1>
+
+    <!-- 3つの切り替えボタン -->
+    <div class="mode-selector">
+        <button class="mode-btn active" onclick="setMode('washoku', this)">和食</button>
+        <button class="mode-btn" onclick="setMode('yoshoku', this)">洋食</button>
+        <button class="mode-btn" onclick="setMode('favorite', this)">すきなもの</button>
+    </div>
+
+    <div class="menu-grid">
+        <div class="menu-item"><span class="label">主食</span><div id="staple" class="dish-name">???</div></div>
+        <div class="menu-item"><span class="label">主菜</span><div id="main" class="dish-name">???</div></div>
+        <div class="menu-item"><span class="label">副菜</span><div id="side" class="dish-name">???</div></div>
+        <div class="menu-item"><span class="label">汁物</span><div id="soup" class="dish-name">???</div></div>
+    </div>
+
+    <button class="generate-btn" onclick="generate()">このモードで考えます！</button>
+</div>
+
+<script>
+    // データを3つのモードに整理
+    const menuData = {
+        washoku: {
+            staple: ["白米", "玄米", "炊き込みご飯"],
+            main: ["", "肉じゃが", "鯖の味噌煮", "とんかつ"],
+            side: ["冷奴", "ほうれん草お浸し", "きゅうりのお浸し"],
+            soup: ["味噌汁", "お吸い物", "豚汁"]
+        },
+        yoshoku: {
+            staple: ["パン", "ガーリックトースト", "ピラフ"],
+            main: ["ハンバーグ", "チキンソテー", "白身魚のフライ", "ビーフシチュー"],
+            side: ["ポテトサラダ", "ジャーマンポテト", "マリネ"],
+            soup: ["コンソメスープ", "コーンチャウダー", "ミネストローネ"]
+        },
+        // 👇 ここにあなたの好きなメニューを自由に書いてください！
+        favorite: {
+            staple: ["つけ麺", "ラーメン", "チャーハン", "カレーライス"],
+            main: ["唐揚げ", "焼肉", "麻婆豆腐", "エビフライ"],
+            side: ["フライドポテト", "マカロニサラダ", "わかめ"],
+            soup: ["たまごスープ", "わかめスープ", "コーンスープ"]
+        }
+    };
+
+    let currentMode = 'washoku'; // 初期モード
+
+    // モードを切り替える関数
+    function setMode(mode, element) {
+        currentMode = mode;
+        
+        // すべてのボタンからactiveクラスを消して、押されたボタンだけに付ける
+        document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+        element.classList.add('active');
+        
+        // モードごとにテーマカラーを変える（和食：緑、洋食：オレンジ、お気に入り：ピンク）
+        const root = document.documentElement;
+        if (mode === 'washoku') root.style.setProperty('--main-color', '#81c784');
+        if (mode === 'yoshoku') root.style.setProperty('--main-color', '#ffb74d');
+        if (mode === 'favorite') root.style.setProperty('--main-color', '#ff8a80');
+    }
+
+    // 抽選する関数
+    function generate() {
+        const data = menuData[currentMode];
+        document.getElementById('staple').innerText = data.staple[Math.floor(Math.random() * data.staple.length)];
+        document.getElementById('main').innerText = data.main[Math.floor(Math.random() * data.main.length)];
+        document.getElementById('side').innerText = data.side[Math.floor(Math.random() * data.side.length)];
+        document.getElementById('soup').innerText = data.soup[Math.floor(Math.random() * data.soup.length)];
+    }
+</script>
+
+</body>
+</html>
